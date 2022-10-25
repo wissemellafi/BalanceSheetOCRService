@@ -1,0 +1,592 @@
+<div class="container mt-5">
+  <div *ngIf="isError" class="alert alert-danger">
+    {{ errorMsg }}
+  </div>
+
+  <div *ngIf="!isError" class="bilan-details">
+    <nav ngbNav #nav="ngbNav" class="nav-tabs">
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Actifs</a>
+        <ng-template ngbNavContent>
+          <p>
+            <ngb-accordion
+              #acc="ngbAccordion"
+              [closeOthers]="true"
+              activeIds="actifs-courants"
+            >
+              <ngb-panel id="actifs-courants" title="Actifs non courants">
+                <ng-template ngbPanelContent>
+                  <!-- Actifs non couratns -->
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr (click)="onRowClick('immoInc', content)">
+                        <td>Immobilisations incorporelles</td>
+                        <td>{{ valueOf("immoInc") | number }}</td>
+                      </tr>
+
+                      <tr
+                        (click)="onRowClick('ammortissementsImmoInco', content)"
+                      >
+                        <td>Ammortissements</td>
+                        <td>
+                          {{ valueOf("ammortissementsImmoInco") | number }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>
+                          {{
+                            diffOf("immoInc", "ammortissementsImmoInco")
+                              | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr (click)="onRowClick('immoCorp', content)">
+                        <td>Immobilisations corporelles</td>
+                        <td>{{ valueOf("immoCorp") | number }}</td>
+                      </tr>
+
+                      <tr
+                        (click)="onRowClick('ammortissementsImmoCorp', content)"
+                      >
+                        <td>Ammortissements</td>
+                        <td>
+                          {{ valueOf("ammortissementsImmoCorp") | number }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>
+                          {{
+                            diffOf("immoCorp", "ammortissementsImmoCorp")
+                              | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr (click)="onRowClick('immoFinancieres', content)">
+                        <td>Immobilisations financières</td>
+                        <td>{{ valueOf("immoFinancieres") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('provImmoFinanciere', content)">
+                        <td>Provision</td>
+                        <td>{{ valueOf("provImmoFinanciere") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>
+                          {{
+                            diffOf("immoFinancieres", "provImmoFinanciere")
+                              | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold fst-italic">
+                          Total des actifs immobilisés
+                        </td>
+                        <td class="fw-bold">
+                          {{
+                            sumOf(
+                              diffOf("immoInc", "ammortissementsImmoInco"),
+                              diffOf("immoCorp", "ammortissementsImmoCorp"),
+                              diffOf("immoFinancieres", "provImmoFinanciere")
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr
+                        (click)="onRowClick('autreActifsNonCourant', content)"
+                      >
+                        <td>Autres actifs non courants</td>
+                        <td>
+                          {{ valueOf("autreActifsNonCourant") | number }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des actifs non courants
+                        </td>
+                        <td class="fw-bold">
+                          {{
+                            sumOf(
+                              sumOf(
+                                diffOf("immoInc", "ammortissementsImmoInco"),
+                                diffOf("immoCorp", "ammortissementsImmoCorp"),
+                                diffOf("immoFinancieres", "provImmoFinanciere")
+                              ),
+                              valueOf("autreActifsNonCourant")
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </ng-template>
+              </ngb-panel>
+
+              <ngb-panel title="Actifs courants">
+                <ng-template ngbPanelContent>
+                  <!-- Actifs couratns -->
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr (click)="onRowClick('stocks', content)">
+                        <td>Stocks</td>
+                        <td>{{ valueOf("stocks") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('provStocks', content)">
+                        <td>Provisions</td>
+                        <td>{{ valueOf("provStocks") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>{{ diffOf("stocks", "provStocks") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('cltCompteRattache', content)">
+                        <td>Clients et comptes rattachés</td>
+                        <td>{{ valueOf("cltCompteRattache") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('provClt', content)">
+                        <td>Provisions</td>
+                        <td>{{ valueOf("provClt") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td></td>
+                        <td>
+                          {{ diffOf("cltCompteRattache", "provClt") | number }}
+                        </td>
+                      </tr>
+
+                      <tr (click)="onRowClick('autreActifsCourants', content)">
+                        <td>Autres actifs courants</td>
+                        <td>{{ valueOf("autreActifsCourants") | number }}</td>
+                      </tr>
+
+                      <tr
+                        (click)="
+                          onRowClick(
+                            'placementsAutresActifsFinanciers',
+                            content
+                          )
+                        "
+                      >
+                        <td>Placements et autres actifs financiers</td>
+                        <td>
+                          {{
+                            valueOf("placementsAutresActifsFinanciers") | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr (click)="onRowClick('liquidite', content)">
+                        <td>Liquidités et équivalents de liquidités</td>
+                        <td>{{ valueOf("liquidite") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des actifs courants
+                        </td>
+                        <td>
+                          {{
+                            sumOf(
+                              diffOf("stocks", "provStocks"),
+                              diffOf("cltCompteRattache", "provClt"),
+                              valueOf("autreActifsCourants"),
+                              valueOf("placementsAutresActifsFinanciers"),
+                              valueOf("liquidite")
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des actifs
+                        </td>
+                        <td>
+                          {{
+                            sumOf(
+                              sumOf(
+                                sumOf(
+                                  diffOf("immoInc", "ammortissementsImmoInco"),
+                                  diffOf("immoCorp", "ammortissementsImmoCorp"),
+                                  diffOf(
+                                    "immoFinancieres",
+                                    "provImmoFinanciere"
+                                  )
+                                ),
+                                valueOf("autreActifsNonCourant")
+                              ),
+                              sumOf(
+                                diffOf("stocks", "provStocks"),
+                                diffOf("cltCompteRattache", "provClt"),
+                                valueOf("autreActifsCourants"),
+                                valueOf("placementsAutresActifsFinanciers"),
+                                valueOf("liquidite")
+                              )
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </ng-template>
+              </ngb-panel>
+            </ngb-accordion>
+          </p>
+        </ng-template>
+      </ng-container>
+
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Capitaux</a>
+        <ng-template ngbNavContent
+          ><p>
+            <ngb-accordion
+              #acc="ngbAccordion"
+              [closeOthers]="true"
+              activeIds="capitaux-propes"
+            >
+              <ngb-panel id="capitaux-propes" title="Capitaux Propres">
+                <ng-template ngbPanelContent>
+                  <!-- Capitaux Propres -->
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr (click)="onRowClick('capital', content)">
+                        <td>Capital social</td>
+                        <td>{{ valueOf("capital") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('reserves', content)">
+                        <td>Réserves légales</td>
+                        <td>{{ valueOf("reserves") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('autresCapitauxPropes', content)">
+                        <td>Autres capitaux propres</td>
+                        <td>{{ valueOf("autresCapitauxPropes") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('resultatReportes', content)">
+                        <td>Résultats reportés</td>
+                        <td>{{ valueOf("resultatReportes") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des capitaux propres avant résultat de l'exercie
+                        </td>
+                        <td class="fw-bold">
+                          {{
+                            sumOf(
+                              valueOf("capital"),
+                              valueOf("reserves"),
+                              valueOf("autresCapitauxPropes"),
+                              valueOf("resultatReportes")
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr (click)="onRowClick('resultatExercie', content)">
+                        <td>Résultat net de l'exercice</td>
+                        <td>{{ valueOf("resultatExercie") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des capitaux propres avant affectation
+                        </td>
+                        <td class="fw-bold">
+                          {{
+                            sumOf(
+                              valueOf("capital"),
+                              valueOf("reserves"),
+                              valueOf("autresCapitauxPropes"),
+                              valueOf("resultatReportes")
+                            ) + +valueOf("resultatExercie") | number
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </ng-template>
+              </ngb-panel>
+
+              <ngb-panel title="Passifs">
+                <ng-template ngbPanelContent>
+                  <!-- Passifs -->
+                  <h6>Passifs non courants</h6>
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr (click)="onRowClick('emprunts', content)">
+                        <td>Emprunts</td>
+                        <td>{{ valueOf("emprunts") | number }}</td>
+                      </tr>
+
+                      <tr
+                        (click)="onRowClick('autresPassifsFinanciers', content)"
+                      >
+                        <td>Autres passifs financiers</td>
+                        <td>
+                          {{ valueOf("autresPassifsFinanciers") | number }}
+                        </td>
+                      </tr>
+
+                      <tr
+                        (click)="onRowClick('provPassifsNonCourants', content)"
+                      >
+                        <td>Provisions</td>
+                        <td>
+                          {{ valueOf("provPassifsNonCourants") | number }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des passifs non courants
+                        </td>
+                        <td>
+                          {{
+                            sumOf(
+                              valueOf("emprunts"),
+                              valueOf("autresPassifsFinanciers"),
+                              valueOf("provPassifsNonCourants")
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h6>Passifs courants</h6>
+                  <table class="table table-sm">
+                    <tbody>
+                      <tr (click)="onRowClick('fournisseurs', content)">
+                        <td>Fournisseurs et comptes rattachés</td>
+                        <td>{{ valueOf("fournisseurs") | number }}</td>
+                      </tr>
+
+                      <tr
+                        (click)="onRowClick('autresPassifsCourants', content)"
+                      >
+                        <td>Autres passifs courants</td>
+                        <td>{{ valueOf("autresPassifsCourants") | number }}</td>
+                      </tr>
+
+                      <tr (click)="onRowClick('concours_bancaires', content)">
+                        <td>Concours bancaires</td>
+                        <td>{{ valueOf("concours_bancaires") | number }}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des actifs courants
+                        </td>
+                        <td class="fw-bold">
+                          {{
+                            sumOf(
+                              valueOf("fournisseurs"),
+                              valueOf("autresPassifsCourants"),
+                              valueOf("concours_bancaires")
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-bold text-decoration-underline">
+                          Total des passifs
+                        </td>
+                        <td class="fw-bold">
+                          {{
+                            sumOf(
+                              sumOf(
+                                valueOf("emprunts"),
+                                valueOf("autresPassifsFinanciers"),
+                                valueOf("provPassifsNonCourants")
+                              ),
+                              sumOf(
+                                valueOf("fournisseurs"),
+                                valueOf("autresPassifsCourants"),
+                                valueOf("concours_bancaires")
+                              )
+                            ) | number
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </ng-template>
+              </ngb-panel>
+            </ngb-accordion>
+          </p></ng-template
+        >
+      </ng-container>
+
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Etat de résultat</a>
+        <ng-template ngbNavContent>
+          <h5>PRODUITS D'EXPLOITATION</h5>
+          <table class="table table-sm">
+            <tbody>
+              <tr (click)="onRowClick('revenus', content)">
+                <td>Revenus</td>
+                <td>{{ valueOf("revenus") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('autresProduits', content)">
+                <td>Autres produits</td>
+                <td>{{ valueOf("autresProduits") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('productionImmobilisee', content)">
+                <td>Production immobilisée</td>
+                <td>{{ valueOf("productionImmobilisee") | number }}</td>
+              </tr>
+
+              <tr>
+                <td class="fw-bold">Total produits d'exploitation</td>
+                <td class="fw-bold">
+                  {{
+                    sumOf(
+                      valueOf("revenus"),
+                      valueOf("productionImmobilisee"),
+                      valueOf("autresProduits")
+                    ) | number
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5>CHARGES D'EXPLOITATION</h5>
+          <table class="table table-sm">
+            <tbody>
+              <tr (click)="onRowClick('variationStock', content)">
+                <td>Variation des stocks</td>
+                <td>{{ valueOf("variationStock") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('achatConsomme', content)">
+                <td>Achats consommés</td>
+                <td>{{ valueOf("achatConsomme") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('achatApprov', content)">
+                <td>Achats d'approvisionnements</td>
+                <td>{{ valueOf("achatApprov") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('chargesPersonnel', content)">
+                <td>Charges de personnel</td>
+                <td>{{ valueOf("chargesPersonnel") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('dotationsAmmort', content)">
+                <td>Dotations aux amortissements</td>
+                <td>{{ valueOf("dotationsAmmort") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('autresChargesExploit', content)">
+                <td>Autres charges d'exploitation</td>
+                <td>{{ valueOf("autresChargesExploit") | number }}</td>
+              </tr>
+
+              <tr>
+                <td class="fw-bold">Total des charges d'exploitation</td>
+                <td class="fw-bold">
+                  {{
+                    sumOf(
+                      valueOf("variationStock"),
+                      valueOf("achatConsomme"),
+                      valueOf("achatApprov"),
+                      valueOf("chargesPersonnel"),
+                      valueOf("dotationsAmmort"),
+                      valueOf("autresChargesExploit")
+                    ) | number
+                  }}
+                </td>
+              </tr>
+
+              <tr (click)="onRowClick('resultatExploitation', content)">
+                <td class="fw-bold">RESULTAT D'EXPLOITATION</td>
+                <td>{{ valueOf("resultatExploitation") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('chargesFinanciere', content)">
+                <td>Charges financières</td>
+                <td>{{ valueOf("chargesFinanciere") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('produitsPlacements', content)">
+                <td>Produits des placements</td>
+                <td>{{ valueOf("produitsPlacements") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('autresGains', content)">
+                <td>Autres gains</td>
+                <td>{{ valueOf("autresGains") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('autresPertes', content)">
+                <td>Autres pertes</td>
+                <td>{{ valueOf("autresPertes") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('impots', content)">
+                <td>Impôt</td>
+                <td>{{ valueOf("impots") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('elementsExtra', content)">
+                <td>Eléments extra</td>
+                <td>{{ valueOf("elementsExtra") | number }}</td>
+              </tr>
+
+              <tr (click)="onRowClick('modifComptables', content)">
+                <td>Modifications comptables</td>
+                <td>{{ valueOf("modifComptables") | number }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </ng-container>
+    </nav>
+
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Mise à jour</h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+      <input
+        type="number"
+        class="form-control mb-3"
+        name="value"
+        [ngModel]="valueOf(selectedBilanKey)"
+        required
+      />
+      <button class="btn btn-success" type="submit">Enregistrer</button>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,178 @@
+<div class="container mt-5">
+  <div *ngIf="isFetchUserError" class="alert alert-danger">
+    {{ errorMsg }}
+  </div>
+
+  <nav ngbNav #nav="ngbNav" class="nav-tabs">
+    <ng-container *ngIf="!isFetchUserError" ngbNavItem>
+      <a ngbNavLink>Profile</a>
+      <ng-template ngbNavContent>
+        <div class="row justify-content-center mt-3">
+          <div class="col-12 col-md-8">
+            <div
+              *ngIf="isError"
+              class="alert alert-danger alert-dismissible fade show"
+            >
+              {{ errorMsg }}
+              <button
+                type="button"
+                class="btn-close"
+                (click)="isError = false"
+              ></button>
+            </div>
+            <form
+              #profileForm="ngForm"
+              (ngSubmit)="onProfileSubmit(profileForm)"
+            >
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label for="username" class="form-label"
+                      >Nom d'utilisateur</label
+                    >
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="username"
+                      id="username"
+                      [ngModel]="user?.username"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select
+                      class="form-select"
+                      name="role"
+                      id="role"
+                      [ngModel]="user?.role"
+                    >
+                      <option *ngFor="let role of roles" [ngValue]="role.role">
+                        {{ role.role }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label for="firstName" class="form-label">Prénom</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="firstName"
+                      id="firstName"
+                      [ngModel]="user?.firstName"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="mb-3">
+                    <label for="lastName" class="form-label">Nom</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="lastName"
+                      id="lastName"
+                      [ngModel]="user?.lastName"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="enabled"
+                      id="enabled"
+                      [ngModel]="user?.enabled"
+                    />
+                    <label class="form-check-label" for="enabled">Activé</label>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                [disabled]="!profileForm.valid"
+                type="submit"
+                class="btn btn-primary"
+              >
+                Mise à jour
+              </button>
+            </form>
+          </div>
+        </div>
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="!isFetchUserError" ngbNavItem>
+      <a ngbNavLink>Changer mot de passe</a>
+      <ng-template ngbNavContent>
+        <form
+          #passwordForm="ngForm"
+          (ngSubmit)="onPasswordSubmit(passwordForm)"
+        >
+          <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4">
+              <div *ngIf="passwordChanged" class="alert alert-success">
+                Mot de passe enregistré
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label"
+                  >Nouveau mot de passe</label
+                >
+                <input
+                  class="form-control"
+                  type="password"
+                  name="password"
+                  id="password"
+                  ngModel
+                  required
+                  #password
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label"
+                  >Confirmer mot de passe</label
+                >
+                <input
+                  class="form-control"
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  ngModel
+                  required
+                  #confirmPassword
+                />
+              </div>
+
+              <button
+                [disabled]="
+                  password.value !== confirmPassword.value ||
+                  !passwordForm.valid
+                "
+                type="submit"
+                class="btn btn-primary"
+              >
+                Enregistrer
+              </button>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </ng-container>
+  </nav>
+
+  <div *ngIf="!isFetchUserError" [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>

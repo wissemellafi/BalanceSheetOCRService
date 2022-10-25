@@ -1,0 +1,32 @@
+.info-section {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.info-section__items {
+  list-style: none;
+}
+
+.info-section__item {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.info-section__item a {
+  text-decoration: none;
+  color: white;
+  background: skyblue;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+.info-section__item a:hover {
+  background: whitesmoke;
+  color: skyblue;
+}
+
+tr:hover {
+  background: skyblue;
+  cursor: pointer;
+  color: white;
+}
